@@ -1,0 +1,72 @@
+# team_mate_like
+type tm : t {
+    predicates {
+        helped(tm);
+        not_helped(tm);
+        disturbed(tm);
+        not_disturbed(tm);
+        bully(tm);
+        not_bully(tm);
+    }
+
+    rules {
+        help/tm     :: $at(P, r) & $at(tm, r) & not_helped(tm) -> helped(tm);
+        disturb/tm :: $at(P, r) & $at(tm, r) & $not_helped(tm) & not_disturbed(tm) -> disturbed(tm);
+        fun/tm :: $at(P, r) & $at(tm, r) & not_bully(tm) -> bully(tm);
+    }
+
+    constraints {
+        tm_1 :: helped(tm) & not_helped(tm) -> fail();        
+    }
+
+    inform7 {
+        type {
+            kind :: "friend-like";
+            definition :: "A friend-like can be helped or not_helped. A friend-like can be disturbed or not_disturbed. A friend-like can be bully or not_bully. A friend-like is usually not_helped.";
+        }
+
+        predicates {
+            helped(tm)     :: "";
+            not_helped(tm)   :: "";
+            disturbed(tm) :: "";
+            not_disturbed(tm) :: "";
+            bully(tm) :: "";
+            not_bully(tm) :: "";
+        }
+
+        commands {
+            help/tm :: "help your team mates" :: "helping team mates";
+            disturb/tm :: "disturb your team mates while they are doing works" :: "disturbing team mates";
+            fun/tm :: "make fun of others" :: "making fun";            
+        }
+
+        code :: """
+            Understand the command "help" as something new. 
+            Understand "help your team mates" as helping team mates. 
+            helping team mates is an action applying to nothing. 
+
+            Carry out helping team mates: 
+                if a friend-like (called pc) is not_helped: 
+                    Say "You have helped your team mates.";
+                    Now the pc is helped.
+
+            Understand the command "disturb" as something new. 
+            Understand "disturb your team mates while they are doing works" as disturbing team mates. 
+            disturbing team mates is an action applying to nothing. 
+
+            Carry out disturbing team mates: 
+                if a friend-like (called pc) is not_disturbed: 
+                    Say "Please! dont do that. You are disturbing your team mates.";
+                    Now the pc is disturbed.
+
+            Understand the command "make" as something new. 
+            Understand "make fun of others" as making fun. 
+            making fun is an action applying to nothing. 
+
+            Carry out making fun: 
+                if a friend-like (called pc) is not_bully: 
+                    Say "You are making fun of other people. It's not good.";
+                    Now the pc is bully.
+        """;
+    }
+}

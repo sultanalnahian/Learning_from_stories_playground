@@ -1,0 +1,29 @@
+type tm2 : t {
+    rules {
+        request/tm2 :: $at(P, r) & $at(tm2, r) & $helped(tm) & in(ap, I) & not_equiped(ap) -> equiped(ap);
+    }
+
+    inform7 {
+        type {
+            kind :: "friend2-like";
+            definition :: "friend2-like is fixed in place.";
+        }
+
+        commands {            
+            request/tm2 :: "request someone to help you wearing the game gears" :: "_requesting someone";
+        }
+        
+        code :: """
+            Understand the command "request" as something new.
+            Understand "request someone to help you wearing the game gears" as _requesting someone.
+            _requesting someone is an action applying to nothing. 
+
+            Carry out _requesting someone:                 
+                if the apparatus-like (called tx) is not_equiped: 
+                    Say "You have requested one of your team mate to help you wearing the game equipment";
+                    Now the tx is equiped.
+
+        """;
+    }
+}
+

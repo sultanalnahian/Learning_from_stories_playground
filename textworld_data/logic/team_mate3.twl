@@ -1,0 +1,123 @@
+# team_mate_3_like
+type tm3 : t {
+    predicates {
+        participated(tm3);
+        denied(tm3);
+        not_denied(tm3);
+        not_participated(tm3);
+        finished(tm3);
+        not_finished(tm3);
+        shared(tm3);
+        not_shared(tm3);
+        attentive(tm3);
+        not_attentive(tm3);
+        annoyed(tm3);
+        not_annoyed(tm3);
+    }
+
+    rules {
+        participate     :: $at(P, r) & $at(tm3, r) & $equiped(ap) & not_participated(tm3) -> participated(tm3);
+        not_participate     :: $at(P, r) & $at(tm3, r) & $not_participated(tm3) & not_denied(tm3) -> denied(tm3);
+        leave/tm3 :: $at(P, r) & $at(tm3, r) & $equiped(ap) & $participated(tm3) & not_finished(tm3) -> finished(tm3);
+        share/tm3 :: $at(P, r) & $at(tm3, r) & $participated(tm3) & $not_finished(tm3) & not_shared(tm3) -> shared(tm3);
+        disturb/tm3 :: $at(P, r) & $at(tm3, r) & $not_finished(tm3) & $participated(tm3) & not_annoyed(tm3)-> annoyed(tm3);
+        attention/tm3 :: $at(P, r) & $at(tm3, r) & $participated(tm3) & $not_finished(tm3) &  not_attentive(tm3) -> attentive(tm3);
+        inattention/tm3 :: $at(P, r) & $at(tm3, r) & $participated(tm3) & $not_finished(tm3) & not_attentive(tm3) -> not_attentive(tm3);
+
+    }
+
+    constraints {
+        tm3_1 :: participated(tm3) & not_participated(tm3) -> fail();        
+        tm3_2 :: attentive(tm3) & not_attentive(tm3) -> fail();        
+    }
+
+    inform7 {
+        type {
+            kind :: "friend3-like";
+            definition :: "A friend3-like can be either participated or not_participated. A friend3-like can be finished or not_finished. A friend3-like can be denied or not_denied. A friend3-like is usually not_participated. A friend3-like can be shared or not_shared. A friend3-like can be attentive or not_attentive. A friend3-like can be annoyed or not_annoyed. A friend3-like is usually not_finished. A friend3-like is usually not_annoyed.";
+        }
+
+        predicates {
+            participated(tm3)     :: "The {tm3} is participated";
+            not_participated(tm3)   :: "The {tm3} is not_participated";
+            denied(tm3) :: "The {tm3} is denied";
+            not_denied(tm3) :: "The {tm3} is not_denied" ;
+            finished(tm3) :: "The {tm3} is finished";
+            not_finished(tm3) :: "The {tm3} is not_finished";
+            shared(tm3) :: "The {tm3} is shared";
+            not_shared(tm3) :: "The {tm3} is not_shared";
+            attentive(tm3) :: "The {tm3} is attentive";
+            not_attentive(tm3) :: "The {tm3} is not_attentive" ;
+            annoyed(tm3) :: "The {tm3} is annoyed";
+            not_annoyed(tm3) :: "The {tm3} is not_annoyed";
+        }
+
+        commands {            
+            participate     :: "join the meeting"    :: "joining meeting";
+            not_participate     :: "avoid joining the meeting"    :: "avoiding meeting";
+            leave/tm3 :: "leave the room after the meeting" :: "leaving meeting";
+            share/tm3 :: "share your ideas in the meeting"    :: "sharing ideas";
+            disturb/tm3 :: "annoy teammates with disturbing activities" :: "doing disturbing things";
+            attention/tm3 :: "give attention in the meeting" :: "giving attention";
+            inattention/tm3 :: "do not give attention in the meeting" :: "not_giving attention";
+
+        }
+
+        code :: """
+            Understand the command "join" as something new. 
+            Understand "join the meeting" as joining meeting. 
+            joining meeting is an action applying to nothing. 
+
+            Carry out joining meeting: 
+                if a friend3-like (called pc) is not_participated: 
+                    Say "you have joined the meeting with your team.";
+                    Now the pc is participated.
+
+            Understand the command "leave" as something new. 
+            Understand "leave the room after the meeting" as leaving meeting. 
+            leaving meeting is an action applying to nothing. 
+
+            Carry out leaving meeting: 
+                if a friend3-like (called pc) is not_finished: 
+                    Say "The meeting is over. Go to east to the field.";
+                    Now the pc is finished.
+
+
+           Understand the command "avoid" as something new. 
+           Understand "avoid joining the meeting" as avoiding meeting. 
+           avoiding meeting is an action applying to nothing. 
+
+           Carry out avoiding meeting: 
+                if a friend3-like (called pc) is not_participated: 
+                    Say "you are not joining the meeting. it's important to join the team meeting";
+                    Now the pc is denied
+
+           Understand the command "share" as something new. 
+           Understand "share your ideas in the meeting" as sharing ideas. 
+           sharing ideas is an action applying to nothing.
+           Carry out sharing ideas: 
+                if a friend3-like (called pc) is not_shared: 
+                    Now the pc is shared
+
+           Understand the command "annoy" as something new. 
+           Understand "annoy teammates with disturbing activities" as doing disturbing things. 
+           doing disturbing things is an action applying to nothing.
+           Carry out doing disturbing things: 
+                if a friend3-like (called pc) is not_annoyed: 
+                    Now the pc is annoyed
+
+           Understand the command "give" as something new. 
+           Understand "give attention in the meeting" as giving attention. 
+           giving attention is an action applying to nothing.
+           Carry out giving attention:
+                if a friend3-like (called pc) is participated: 
+                    Now the pc is attentive
+
+           Understand "do not give attention in the meeting" as not_giving attention. 
+           not_giving attention is an action applying to nothing.
+           Carry out not_giving attention:
+                if a friend3-like (called pc) is participated: 
+                    Now the pc is not_attentive
+        """;
+    }
+}
